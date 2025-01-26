@@ -1,0 +1,162 @@
+/* General Styles */
+:root {
+    --primary-color: #FFD700;
+    --secondary-color: #1A1A2E;
+    --background-color: #f4f4f4;
+    --text-color: #000;
+    --font-family: 'Gilroy', sans-serif;
+  }
+  
+  body {
+    font-family: var(--font-family);
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    background-color: var(--background-color);
+    color: var(--text-color);
+  }
+  
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--secondary-color);
+    color: var(--primary-color);
+    padding: 15px 20px;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .logo {
+    font-size: 24px;
+    font-weight: bold;
+  }
+  
+  .nav {
+    display: flex;
+    gap: 20px;
+  }
+  
+  .nav-links {
+    list-style: none;
+    display: flex;
+    gap: 15px;
+    padding-right: 140px;
+  }
+  
+  .nav-links a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 500;
+  }
+  
+  .menu-toggle {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
+    padding-right: 40px; 
+  }
+  
+  .menu-toggle span {
+    width: 25px;
+    height: 3px;
+    background-color: var(--primary-color);
+    
+  }
+  
+  /* Responsive Nav */
+  @media (max-width: 768px) {
+    .menu-toggle {
+      display: flex;
+      
+    }
+  
+    .nav {
+      display: none;
+      flex-direction: column;
+      background-color: var(--secondary-color);
+      position: absolute;
+      top: 60px;
+      right: 0;
+      padding: 10px;
+      border-radius: 5px;
+    }
+  
+    .nav.active {
+      display: flex;
+    }
+  }
+  
+  /* Main Content */
+  main {
+    margin-top: 80px;
+    padding: 20px;
+  }
+  
+  .form-section {
+    text-align: center;
+  }
+  
+  #package-form input {
+    margin: 10px;
+    padding: 10px;
+    border: 2px solid var(--primary-color);
+    border-radius: 5px;
+  }
+  
+  #package-form button {
+    padding: 10px 20px;
+    background-color: var(--primary-color);
+    border: none;
+    border-radius: 5px;
+    color: var(--secondary-color);
+    cursor: pointer;
+  }
+  
+  .table-section {
+    margin-top: 20px;
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+  
+  th, td {
+    padding: 10px;
+    text-align: center;
+    border: 1px solid var(--primary-color);
+  }
+  
+  th {
+    background-color: var(--secondary-color);
+    color: var(--primary-color);
+  }
+  
+  button {
+    margin: 5px;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+  }
+  
+  button.pause {
+    background-color: orange;
+  }
+  
+  button.resume {
+    background-color: green;
+    color: white;
+  }
+  
+  button.delivered {
+    background-color: red;
+    color: white;
+  }
+  

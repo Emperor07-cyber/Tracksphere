@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Success</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Navbar -->
+  <header class="header">
+    <div class="logo">LOGO</div>
+    <nav class="nav">
+      <ul class="nav-links">
+        <li><a href="#form">Form</a></li>
+        <li><a href="#table">Packages</a></li>
+      </ul>
+    </nav>
+    <div class="menu-toggle">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main>
+    <!-- Horizontal Form -->
+    <section id="form" class="form-section">
+      <h1>Package Details</h1>
+      <form id="package-form">
+        <input type="text" id="tracking-number" placeholder="Tracking Number" required>
+        <input type="text" id="full-name" placeholder="Full Name" required>
+        <input type="tel" id="phone-number" placeholder="Phone Number" required>
+        <button type="submit">Add Package</button>
+      </form>
+    </section>
+
+    <!-- Table -->
+    <section id="table" class="table-section">
+      <h2>Package List</h2>
+      <table id="package-table">
+        <thead>
+          <tr>
+            <th>Tracking Number</th>
+            <th>Full Name</th>
+            <th>Phone Number</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Rows will be added dynamically -->
+        </tbody>
+      </table>
+    </section>
+  </main>
+
+  <script src="scripts.js"></script>
+</body>
+</html>
