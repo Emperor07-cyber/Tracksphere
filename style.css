@@ -54,7 +54,6 @@ body {
     list-style: none;
     margin: 0;
     padding-right: 65px;
-
 }
 
 .nav-links li a {
@@ -70,6 +69,7 @@ body {
     background-color: var(--primary-color);
     color: var(--secondary-color);
 }
+
 /* Profile Icon */
 .profile-icon {
     cursor: pointer;
@@ -126,7 +126,6 @@ body {
 .popup-form button:hover {
     background-color: #FFC300;
 }
-
 
 /* Mobile Menu Toggle */
 .menu-toggle {
@@ -200,7 +199,7 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.5); /* Optional: Adds a dark overlay */
+    
     z-index: 1;
 }
 
@@ -267,7 +266,6 @@ body {
     width: 100%;
     height: auto;
     border-radius: 8px;
-    loading: lazy;
 }
 
 /* Services Section */
@@ -329,3 +327,79 @@ body {
     font-size: 14px;
 }
 
+/* Tracking Result Table */
+.tracking-result {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    font-size: 16px;
+}
+
+.tracking-result table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.tracking-result th, .tracking-result td {
+    padding: 10px 15px;
+    border-bottom: 1px solid #ddd;
+}
+
+.tracking-result th {
+    background-color: var(--primary-color);
+    color: var(--secondary-color);
+    font-weight: bold;
+}
+
+.tracking-result td {
+    color: var(--text-color);
+}
+
+/* Address Card Styles */
+.address-card-container {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap; /* Allows wrapping if the screen is too small */
+    justify-content: space-between;
+}
+
+.address-card {
+    background-color: #FFD700;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    width: 300px;
+    margin-bottom: 20px;
+}
+
+.address-card h3 {
+    font-size: 1.2em;
+    margin-bottom: 10px;
+}
+
+.address-card p {
+    margin: 5px 0;
+    font-size: 0.9em;
+}
+
+.address-card strong {
+    font-weight: bold;
+}
+
+
+/* Button and Focus States */
+.nav-links li a:focus, .popup-form button:focus {
+    outline: 2px solid var(--primary-color);
+}
+
+.tracking-form button:active {
+    transform: scale(0.98);
+}
+
+.tracking-form button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}

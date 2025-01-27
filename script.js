@@ -1,13 +1,15 @@
 // Handle form submission and tracking number validation
 const trackingForm = document.querySelector('.tracking-form');
 const trackingInput = document.querySelector('.tracking-form input');
+const trackingResult = document.getElementById('tracking-result');
 const errorMessage = document.createElement('p');
+
 errorMessage.style.color = 'red';
 errorMessage.style.marginTop = '10px';
 errorMessage.style.display = 'none';
 trackingForm.appendChild(errorMessage);
 
-trackingForm.addEventListener('submit', (event) => {
+trackingForm.addEventListener('submit', async (event) => {
   event.preventDefault(); // Prevent page reload
   const trackingNumber = trackingInput.value.trim();
 
@@ -19,10 +21,49 @@ trackingForm.addEventListener('submit', (event) => {
     return;
   }
 
-  console.log(`Tracking Number: ${trackingNumber}`);
   errorMessage.style.display = 'none';
   trackingInput.style.border = '2px solid #FFD700';
-  alert(`Tracking Number: ${trackingNumber} submitted successfully!`);
+
+  // Check for local data or fetch from external source
+  const packageDetails = getPackageDetails(trackingNumber);
+  if (packageDetails) {
+    displayPackageDetails(packageDetails); // Display from local storage
+  } else {
+    try {
+      const response = await fetch(`success.html?tracking=${trackingNumber}`);
+
+      // Check if the response is OK (status 200)
+      if (!response.ok) {
+        throw new Error('Tracking Number not found.');
+      }
+
+      // Log the response status and headers
+      console.log('Response Status:', response.status);
+      console.log('Response Headers:', response.headers);
+
+      const responseText = await response.text();
+      console.log('Response Text:', responseText);  // Log the actual response text for debugging
+
+      // Check if response is HTML (could be an error page)
+      if (responseText.startsWith('<!DOCTYPE html>')) {
+        throw new Error('Tracking Number not found in HTML response.');
+      }
+
+      // Attempt to parse the response as JSON
+      let data;
+      try {
+        data = JSON.parse(responseText);
+      } catch (parseError) {
+        throw new Error('Failed to parse JSON response');
+      }
+
+      displayPackageDetails(data); // Display fetched details
+    } catch (error) {
+      alert(error.message);
+    }
+  }
+
+  trackingInput.value = '';
 });
 
 // Validate tracking number (10-12 numeric characters)
@@ -38,6 +79,77 @@ trackingInput.addEventListener('input', () => {
     trackingInput.style.border = '2px solid red';
   } else {
     trackingInput.style.border = '2px solid #FFD700';
+  }
+});
+
+// Retrieve package details from local storage
+function getPackageDetails(trackingNumber) {
+  const packages = JSON.parse(localStorage.getItem('packages')) || [];
+  return packages.find((pkg) => pkg.trackingNumber === trackingNumber);
+}
+
+// Display package details including shipper and receiver addresses in a dynamic table and cards
+function displayPackageDetails(details) {
+  trackingResult.innerHTML = `
+    <div class="address-card">
+        <h3>Shipper Address</h3>
+        <p><strong>Shipper Name:</strong> ${details.shipperName || 'N/A'}</p>
+        <p><strong>Shipper Address:</strong> ${details.shipperAddress || 'N/A'}</p>
+        <p><strong>Email:</strong> ${details.shipperEmail || 'N/A'}</p>
+    </div>
+    
+    <div class="address-card">
+        <h3>Receiver Address</h3>
+        <p><strong>Reciever Name:</strong> ${details.receiverName || 'N/A'}</p>
+        <p><strong> Receiver Address:</strong> ${details.receiverAddress || 'N/A'}</p>
+        <p><strong>Email:</strong> ${details.receiverEmail || 'N/A'}</p>
+    </div>
+
+    <h3>Package Details</h3>
+    <table>
+      <tr><th>Package Name</th><td>${details.packageName || 'N/A'}</td></tr>
+      <tr><th>Tracking Number</th><td>${details.trackingNumber || 'N/A'}</td></tr>
+      <tr><th>Departure Time</th><td>${details.departureTime || 'N/A'}</td></tr>
+      <tr><th>Pick-Up Time</th><td>${details.pickUpTime || 'N/A'}</td></tr>
+      <tr><th>Ship Date</th><td>${details.shipDate || 'N/A'}</td></tr>
+      <tr><th>Delivery Date</th><td>${details.deliveryDate || 'N/A'}</td></tr>
+      <tr><th>Origin</th><td>${details.origin || 'N/A'}</td></tr>
+      <tr><th>Destination</th><td>${details.destination || 'N/A'}</td></tr>
+      <tr><th>Carrier</th><td>${details.carrier || 'N/A'}</td></tr>
+      <tr><th>Type of Shipment</th><td>${details.type_of_shipment || 'N/A'}</td></tr>
+      <tr><th>Weight</th><td>${details.weight || 'N/A'}</td></tr>
+      <tr><th>Payment Mode</th><td>${details.paymentMode || 'N/A'}</td></tr>
+      <tr><th>Total Freight</th><td>${details.totalFreight || 'N/A'}</td></tr>
+      <tr><th>Status</th><td>${details.packageStatus || 'N/A'}</td></tr>
+      ${details.comments ? `<tr><th>Comments</th><td>${details.comments}</td></tr>` : ''}
+    </table>
+
+    
+  `;
+}
+
+// Action buttons to update package status
+trackingResult.addEventListener('click', (event) => {
+  if (event.target.classList.contains('pause') || event.target.classList.contains('resume') || event.target.classList.contains('delivered')) {
+    const button = event.target;
+    const index = button.dataset.index;
+    let packages = JSON.parse(localStorage.getItem('packages')) || [];
+    const pkg = packages[index];
+
+    // Update the package status based on the button clicked
+    if (button.classList.contains('pause')) {
+      pkg.packageStatus = 'Paused';
+    } else if (button.classList.contains('resume')) {
+      pkg.packageStatus = 'In Progress';
+    } else if (button.classList.contains('delivered')) {
+      pkg.packageStatus = 'Delivered';
+    }
+
+    // Save the updated package data back to localStorage
+    localStorage.setItem('packages', JSON.stringify(packages));
+
+    // Refresh the displayed details
+    displayPackageDetails(pkg);
   }
 });
 
@@ -60,7 +172,6 @@ const menuToggle = document.querySelector('.menu-toggle');
 const nav = document.querySelector('.nav');
 
 menuToggle.addEventListener('click', () => {
-  console.log('Menu toggle clicked');
   nav.classList.toggle('active');
 });
 
@@ -68,39 +179,27 @@ menuToggle.addEventListener('click', () => {
 const profileIcon = document.querySelector('.profile-icon');
 const popupForm = document.querySelector('.popup-form');
 const profileForm = document.getElementById('profile-form');
-const validCode = "123456"; // Replace this with the correct code
+const validCode = '199333'; // Replace this with the correct code
 
-// Show the popup form when clicking the profile icon
 profileIcon.addEventListener('click', (event) => {
-  console.log('Profile icon clicked');
-  event.stopPropagation(); // Prevent click event from bubbling up
+  event.stopPropagation();
   popupForm.style.display = popupForm.style.display === 'block' ? 'none' : 'block';
-  console.log(`Popup form visibility: ${popupForm.style.display}`);
 });
 
-// Hide the popup form when clicking outside of it
 document.addEventListener('click', (event) => {
   if (!popupForm.contains(event.target) && event.target !== profileIcon) {
-    console.log('Click detected outside popup form');
     popupForm.style.display = 'none';
-    console.log('Popup form hidden');
   }
 });
 
-// Handle the popup form submission
 profileForm.addEventListener('submit', (event) => {
-  event.preventDefault(); // Prevent form from submitting normally
+  event.preventDefault();
   const enteredCode = document.getElementById('six-digit-code').value;
-  console.log(`Entered code: ${enteredCode}`);
 
   if (enteredCode === validCode) {
-    console.log('Code is valid! Redirecting...');
     alert('Code is valid! Redirecting...');
-    window.location.href = 'success.html'; // Redirect to success page
+    window.location.href = 'success.html';
   } else {
-    console.log('Invalid code entered');
     alert('Invalid code. Please try again.');
   }
 });
-
-

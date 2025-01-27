@@ -23,22 +23,21 @@
                 <li><a href="#footer">Contact</a></li>
             </ul>
             <!-- Profile Icon -->
-<div class="profile-icon">
-    <img src="images/profile-icon.jpg" alt="Profile Icon" />
-</div>
+            <div class="profile-icon">
+                <img src="images/profile-icon.jpg" alt="Profile Icon" />
+            </div>
         </nav>
     </header>
-    
-      
+
     <!-- Hero Section -->
     <section id="hero" class="hero">
         <h2>Welcome to ExpressDelivery247</h2>
         <p>Your reliable package tracking solution.</p>
-        <form class="tracking-form">
-            <input type="text" placeholder="Enter your tracking number" required>
+        <form class="tracking-form" id="tracking-form">
+            <input id="tracking-input" type="text" placeholder="Enter your tracking number" required>
             <button type="submit">Track Now</button>
         </form>
-        <div id="tracking-result"></div>
+        <div id="tracking-result" class="tracking-result"></div>
     </section>
 
     <!-- About Section -->
@@ -52,14 +51,15 @@
         </div>
     </section>
 
-<!-- Popup Form -->
-<div class="popup-form" >
-    <form id="profile-form">
-        <label for="six-digit-code">Enter 6-Digit Code:</label>
-        <input type="text" id="six-digit-code" maxlength="6" placeholder="123456" required />
-        <button type="submit">Submit</button>
-    </form>
-</div>
+    <!-- Popup Form -->
+    <div class="popup-form" style="display: none;">
+        <form id="profile-form">
+            <label for="six-digit-code">Enter 6-Digit Code:</label>
+            <input type="text" id="six-digit-code" maxlength="6" placeholder="123456" required />
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+
     <!-- Services Section -->
     <section id="services" class="services">
         <h2>Our Services</h2>
@@ -84,8 +84,9 @@
 
     <!-- Footer Section -->
     <footer id="footer" class="footer">
-        <p> ExpressDelivery247. All rights reserved.   &copy; 2025</p>
+        <p>ExpressDelivery247. All rights reserved. &copy; 2025</p>
     </footer>
-    <script src="script.js" defer></script>
+
+    <script src="script.js"></script>
 </body>
 </html>

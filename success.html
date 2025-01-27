@@ -9,7 +9,7 @@
 <body>
   <!-- Navbar -->
   <header class="header">
-    <div class="logo">LOGO</div>
+    <div class="logo">ExpressDelivery247</div>
     <nav class="nav">
       <ul class="nav-links">
         <li><a href="#form">Form</a></li>
@@ -25,26 +25,112 @@
 
   <!-- Main Content -->
   <main>
-    <!-- Horizontal Form -->
+    <!-- Address Cards Section -->
+    <section id="address-section" class="address-section">
+      <div class="address-card">
+        <h2>Shipper Address</h2>
+        <form>
+          <label for="shipper-name">Name</label>
+          <input type="text" id="shipper-name" required />
+          
+          <label for="shipper-address">Address</label>
+          <input type="text" id="shipper-address" required />
+          
+          <label for="shipper-email">Email</label>
+          <input type="email" id="shipper-email" required />
+        </form>
+      </div>
+
+      <div class="address-card">
+        <h2>Receiver Address</h2>
+        <form>
+          <label for="receiver-name">Name</label>
+          <input type="text" id="receiver-name" required />
+          
+          <label for="receiver-address">Address</label>
+          <input type="text" id="receiver-address" required />
+          
+          <label for="receiver-email">Email</label>
+          <input type="email" id="receiver-email" required />
+        </form>
+      </div>
+    </section>
+
+    <!-- Package Details Form -->
     <section id="form" class="form-section">
       <h1>Package Details</h1>
       <form id="package-form">
-        <input type="text" id="tracking-number" placeholder="Tracking Number" required>
-        <input type="text" id="full-name" placeholder="Full Name" required>
-        <input type="tel" id="phone-number" placeholder="Phone Number" required>
+        <label for="package-name">Package Name</label>
+        <input type="text" id="package-name" required />
+        
+        <label for="tracking-number">Tracking Number</label>
+        <input type="text" id="tracking-number" required />
+        
+        <label for="departure-time">Departure Time</label>
+        <input type="time" id="departure-time" required />
+        
+        <label for="pick-up-time">Pick-Up Time</label>
+        <input type="time" id="pick-up-time" required />
+        
+        <label for="ship-date">Ship Date</label>
+        <input type="date" id="ship-date" required />
+        
+        <label for="delivery-date">Delivery Date</label>
+        <input type="date" id="delivery-date" required />
+        
+        <label for="origin">Origin</label>
+        <input type="text" id="origin" required />
+        
+        <label for="destination">Destination</label>
+        <input type="text" id="destination" required />
+        
+        <label for="carrier">Carrier</label>
+        <input type="text" id="carrier" required />
+        
+        <label for="type-of-shipment">Type of Shipment</label>
+        <input type="text" id="type-of-shipment" required />
+        
+        <label for="weight">Weight</label>
+        <input type="number" id="weight" required />
+        
+        <label for="payment-mode">Payment Mode</label>
+        <select id="payment-mode" required>
+          <option value="" disabled selected>Select Payment Mode</option>
+          <option value="cash">Cash</option>
+          <option value="credit-card">Credit Card</option>
+          <option value="mobile-payment">Mobile Payment</option>
+          <option value="bank-transfer">Bank Transfer</option>
+        </select>
+        
+        <label for="total-freight">Total Freight</label>
+        <input type="number" id="total-freight" required />
+        
+        <label for="comments">Comments</label>
+        <textarea id="comments"></textarea>
+        
         <button type="submit">Add Package</button>
       </form>
     </section>
-
-    <!-- Table -->
+    
+    <!-- Package List -->
     <section id="table" class="table-section">
       <h2>Package List</h2>
       <table id="package-table">
         <thead>
           <tr>
+            <th>Package Name</th>
             <th>Tracking Number</th>
-            <th>Full Name</th>
-            <th>Phone Number</th>
+            <th>Departure Time</th>
+            <th>Pick-Up Time</th>
+            <th>Shipping Date</th>
+            <th>Delivery Date</th>
+            <th>Origin</th>
+            <th>Destination</th>
+            <th>Carrier</th>
+            <th>Type of Shipment</th>
+            <th>Weight</th>
+            <th>Payment Mode</th>
+            <th>Total Freight</th>
             <th>Actions</th>
           </tr>
         </thead>
