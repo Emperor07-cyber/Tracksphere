@@ -105,7 +105,7 @@ function displayPackageDetails(details) {
             <hr>
             <p><strong>Shipper Name:</strong> ${details.shipperName || 'N/A'}</p>
             <p><strong>Shipper Address:</strong> ${details.shipperAddress || 'N/A'}</p>
-            <p><strong>Email:</strong> ${details.shipperEmail || 'N/A'}</p>
+            <p><strong>Phone Number:</strong> ${details.shipperPhone || 'N/A'}</p>
         </div>
 
         <div class="address-card">
@@ -113,7 +113,7 @@ function displayPackageDetails(details) {
             <hr>
             <p><strong>Receiver Name:</strong> ${details.receiverName || 'N/A'}</p>
             <p><strong>Receiver Address:</strong> ${details.receiverAddress || 'N/A'}</p>
-            <p><strong>Email:</strong> ${details.receiverEmail || 'N/A'}</p>
+            <p><strong>Phone Number:</strong> ${details.receiverPhone || 'N/A'}</p>
         </div>
     </div>
 

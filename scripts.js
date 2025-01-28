@@ -117,8 +117,10 @@ form.addEventListener("submit", (e) => {
     paymentMode,
     comments,
     shipperName,
+    shipperAddress,
     shipperPhone,
     receiverName,
+    receiverAddress,
     receiverPhone
   };
 
