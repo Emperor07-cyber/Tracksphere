@@ -66,9 +66,9 @@ trackingForm.addEventListener('submit', async (event) => {
   trackingInput.value = '';
 });
 
-// Validate tracking number (10-12 numeric characters)
+// Validate tracking number (20 alphanumeric characters)
 function isValidTrackingNumber(number) {
-  const trackingRegex = /^[0-9]{10,12}$/;
+  const trackingRegex = /^[a-zA-Z0-9]{20}$/;
   return trackingRegex.test(number);
 }
 
@@ -104,6 +104,7 @@ function displayPackageDetails(details) {
             <h3>Shipper Address</h3>
             <hr>
             <p><strong>Shipper Name:</strong> ${details.shipperName || 'N/A'}</p>
+            <p><strong>Shipper Address:</strong> ${details.shipperAddress || 'N/A'}</p>
             <p><strong>Email:</strong> ${details.shipperEmail || 'N/A'}</p>
         </div>
 
@@ -111,6 +112,7 @@ function displayPackageDetails(details) {
             <h3>Receiver Address</h3>
             <hr>
             <p><strong>Receiver Name:</strong> ${details.receiverName || 'N/A'}</p>
+            <p><strong>Receiver Address:</strong> ${details.receiverAddress || 'N/A'}</p>
             <p><strong>Email:</strong> ${details.receiverEmail || 'N/A'}</p>
         </div>
     </div>
@@ -136,7 +138,7 @@ function displayPackageDetails(details) {
                 <tr>
                     <th>Shipping Date</th>
                     <th>Departure Time</th>
-                    <th>Pickup Time</th>
+                    <th>Expected Delivery Time</th>
                 </tr>
             </thead>
             <tbody>

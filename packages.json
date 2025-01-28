@@ -6,7 +6,7 @@
       "pickUpTime": "2:00 PM",
       "shipDate": "2025-01-27",
       "deliveryDate": "2025-01-28",
-      "packageStatus": "Pending",
+      "packageStatus": "Pause",
       "origin": "New York",
       "destination": "California",
       "carrier": "FedEx",

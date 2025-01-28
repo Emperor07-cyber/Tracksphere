@@ -77,10 +77,12 @@ form.addEventListener("submit", (e) => {
 
   // Get shipper and receiver address details
   const shipperName = document.getElementById("shipper-name").value;
-  const shipperEmail = document.getElementById("shipper-email").value;
+  const shipperAddress = document.getElementById("shipper-address").value;
+  const shipperPhone = document.getElementById("shipper-phone").value;
 
   const receiverName = document.getElementById("receiver-name").value;
-  const receiverEmail = document.getElementById("receiver-email").value;
+  const receiverAddress = document.getElementById("receiver-address").value;
+  const receiverPhone = document.getElementById("receiver-phone").value;
 
   // Check for empty required fields (add more if needed)
   if (
@@ -92,7 +94,9 @@ form.addEventListener("submit", (e) => {
     !deliveryDate ||
     !paymentMode ||
     !shipperName || // Check if shipper details are provided
-    !receiverName  // Check if receiver details are provided
+    !shipperPhone || // Check if shipper details are provided
+    !receiverName || // Check if receiver details are provided
+    !receiverPhone // Check if receiver details are provided
   ) {
     alert("Please fill in all the required fields.");
     return;
@@ -106,16 +110,16 @@ form.addEventListener("submit", (e) => {
     pickUpTime,
     shipDate,
     deliveryDate,
-    packageStatus: "Pending", // Default status
+    packageStatus: "Paused", // Default status
     origin,
     destination,
     weight: `${weight} kg`, // Store weight with "kg" suffix
     paymentMode,
     comments,
     shipperName,
-    shipperEmail,
+    shipperPhone,
     receiverName,
-    receiverEmail
+    receiverPhone
   };
 
   // Add the package to the array
@@ -138,8 +142,8 @@ tableBody.addEventListener("click", (e) => {
     const index = button.dataset.index;
 
     if (button.classList.contains("pause")) {
-      // Change status to "Pending" when Pause is clicked
-      packages[index].packageStatus = "Pending";
+      // Change status to "Pause" when Pause is clicked
+      packages[index].packageStatus = "Paused";
       alert(`Package "${packages[index].packageName}" paused!`);
     } else if (button.classList.contains("resume")) {
       // Change status to "In Transit" when Resume is clicked
