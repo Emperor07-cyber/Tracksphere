@@ -88,45 +88,95 @@ function getPackageDetails(trackingNumber) {
   return packages.find((pkg) => pkg.trackingNumber === trackingNumber);
 }
 
-// Display package details including shipper and receiver addresses in a dynamic table and cards
 function displayPackageDetails(details) {
   trackingResult.innerHTML = `
-    <div class="address-card">
-        <h3>Shipper Address</h3>
-        <p><strong>Shipper Name:</strong> ${details.shipperName || 'N/A'}</p>
-        <p><strong>Shipper Address:</strong> ${details.shipperAddress || 'N/A'}</p>
-        <p><strong>Email:</strong> ${details.shipperEmail || 'N/A'}</p>
-    </div>
-    
-    <div class="address-card">
-        <h3>Receiver Address</h3>
-        <p><strong>Reciever Name:</strong> ${details.receiverName || 'N/A'}</p>
-        <p><strong> Receiver Address:</strong> ${details.receiverAddress || 'N/A'}</p>
-        <p><strong>Email:</strong> ${details.receiverEmail || 'N/A'}</p>
+    <!-- Tracking Number with Barcode -->
+    <div class="tracking-info">
+        <h2>Tracking Number: ${details.trackingNumber || 'N/A'}</h2>
+        <div class="barcode-container">
+            <img src="https://barcode.tec-it.com/barcode.ashx?data=${details.trackingNumber || ''}&code=Code128&dpi=96" alt="Barcode for Tracking Number">
+        </div>
     </div>
 
-    <h3>Package Details</h3>
-    <table>
-      <tr><th>Package Name</th><td>${details.packageName || 'N/A'}</td></tr>
-      <tr><th>Tracking Number</th><td>${details.trackingNumber || 'N/A'}</td></tr>
-      <tr><th>Departure Time</th><td>${details.departureTime || 'N/A'}</td></tr>
-      <tr><th>Pick-Up Time</th><td>${details.pickUpTime || 'N/A'}</td></tr>
-      <tr><th>Ship Date</th><td>${details.shipDate || 'N/A'}</td></tr>
-      <tr><th>Delivery Date</th><td>${details.deliveryDate || 'N/A'}</td></tr>
-      <tr><th>Origin</th><td>${details.origin || 'N/A'}</td></tr>
-      <tr><th>Destination</th><td>${details.destination || 'N/A'}</td></tr>
-      <tr><th>Carrier</th><td>${details.carrier || 'N/A'}</td></tr>
-      <tr><th>Type of Shipment</th><td>${details.type_of_shipment || 'N/A'}</td></tr>
-      <tr><th>Weight</th><td>${details.weight || 'N/A'}</td></tr>
-      <tr><th>Payment Mode</th><td>${details.paymentMode || 'N/A'}</td></tr>
-      <tr><th>Total Freight</th><td>${details.totalFreight || 'N/A'}</td></tr>
-      <tr><th>Status</th><td>${details.packageStatus || 'N/A'}</td></tr>
-      ${details.comments ? `<tr><th>Comments</th><td>${details.comments}</td></tr>` : ''}
-    </table>
+    <!-- Address Cards -->
+    <div class="address-cards">
+        <div class="address-card">
+            <h3>Shipper Address</h3>
+            <hr>
+            <p><strong>Shipper Name:</strong> ${details.shipperName || 'N/A'}</p>
+            <p><strong>Email:</strong> ${details.shipperEmail || 'N/A'}</p>
+        </div>
 
-    
+        <div class="address-card">
+            <h3>Receiver Address</h3>
+            <hr>
+            <p><strong>Receiver Name:</strong> ${details.receiverName || 'N/A'}</p>
+            <p><strong>Email:</strong> ${details.receiverEmail || 'N/A'}</p>
+        </div>
+    </div>
+
+<!-- Styled Table for Package Details -->
+    <div class="package-details">
+        <table class="details-table">
+            <thead>
+                <tr>
+                    <th>Tracking Number</th>
+                    <th>Estimated Delivery</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>${details.packageName || 'N/A'}</td>
+                    <td>${details.deliveryDate || 'N/A'}</td>
+                    <td>${details.packageStatus || 'N/A'}</td>
+                </tr>
+            </tbody>
+            <thead>
+                <tr>
+                    <th>Shipping Date</th>
+                    <th>Departure Time</th>
+                    <th>Pickup Time</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>${details.shipDate || 'N/A'}</td>
+                    <td>${details.departureTime || 'N/A'}</td>
+                    <td>${details.pickUpTime || 'N/A'}</td>
+                </tr>
+            </tbody>
+            <thead>
+                <tr>
+                    <th>Origin</th>
+                    <th>Destination</th>
+                    <th>Weight</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>${details.origin || 'N/A'}</td>
+                    <td>${details.destination || 'N/A'}</td>
+                    <td>${details.weight || 'N/A'}</td>
+                </tr>
+            </tbody>
+            <thead>
+                <tr>
+                    <th>Payment Mode</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>${details.paymentMode || 'N/A'}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
   `;
 }
+
+
 
 // Action buttons to update package status
 trackingResult.addEventListener('click', (event) => {

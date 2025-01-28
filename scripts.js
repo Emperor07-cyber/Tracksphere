@@ -36,11 +36,8 @@ const renderTable = () => {
       <td>${pkg.deliveryDate}</td>
       <td>${pkg.origin}</td>
       <td>${pkg.destination}</td>
-      <td>${pkg.carrier}</td>
-      <td>${pkg.type_of_shipment}</td>
       <td>${pkg.weight} kg</td> <!-- Display weight with "kg" suffix -->
       <td>${pkg.paymentMode}</td>
-       <td>${pkg.totalFreight}</td> <!-- Show totalFreight with "$" prefix -->
       <td>${pkg.packageStatus}</td> <!-- Add package status column -->
       <td>
         <button class="pause" data-index="${index}">Pause</button>
@@ -74,20 +71,15 @@ form.addEventListener("submit", (e) => {
   const deliveryDate = document.getElementById("delivery-date").value;
   const origin = document.getElementById("origin").value;
   const destination = document.getElementById("destination").value;
-  const carrier = document.getElementById("carrier").value;
-  const type_of_shipment = document.getElementById("type-of-shipment").value;
   const weight = document.getElementById("weight").value;
   const paymentMode = document.getElementById("payment-mode").value;
-  const totalFreight = document.getElementById("total-freight").value;
   const comments = document.getElementById("comments").value;
 
   // Get shipper and receiver address details
   const shipperName = document.getElementById("shipper-name").value;
-  const shipperAddress = document.getElementById("shipper-address").value;
   const shipperEmail = document.getElementById("shipper-email").value;
 
   const receiverName = document.getElementById("receiver-name").value;
-  const receiverAddress = document.getElementById("receiver-address").value;
   const receiverEmail = document.getElementById("receiver-email").value;
 
   // Check for empty required fields (add more if needed)
@@ -99,11 +91,8 @@ form.addEventListener("submit", (e) => {
     !shipDate ||
     !deliveryDate ||
     !paymentMode ||
-    !totalFreight ||
     !shipperName || // Check if shipper details are provided
-    !shipperAddress || // Check if shipper address is provided
-    !receiverName || // Check if receiver details are provided
-    !receiverAddress // Check if receiver address is provided
+    !receiverName  // Check if receiver details are provided
   ) {
     alert("Please fill in all the required fields.");
     return;
@@ -120,17 +109,12 @@ form.addEventListener("submit", (e) => {
     packageStatus: "Pending", // Default status
     origin,
     destination,
-    carrier,
-    type_of_shipment,
     weight: `${weight} kg`, // Store weight with "kg" suffix
     paymentMode,
-    totalFreight: `$${totalFreight}`, // Store freight with "$" prefix
     comments,
     shipperName,
-    shipperAddress,
     shipperEmail,
     receiverName,
-    receiverAddress,
     receiverEmail
   };
 

@@ -327,66 +327,97 @@ body {
     font-size: 14px;
 }
 
-/* Tracking Result Table */
-.tracking-result {
-    margin-top: 20px;
-    padding: 20px;
-    background-color: #fff;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    font-size: 16px;
-}
 
-.tracking-result table {
-    width: 100%;
-    border-collapse: collapse;
-    text-align: left;
-}
-
-.tracking-result th, .tracking-result td {
-    padding: 10px 15px;
-    border-bottom: 1px solid #ddd;
-}
-
-.tracking-result th {
-    background-color: var(--primary-color);
-    color: var(--secondary-color);
-    font-weight: bold;
-}
-
-.tracking-result td {
-    color: var(--text-color);
-}
-
-/* Address Card Styles */
-.address-card-container {
+/* Tracking Info */
+.tracking-info {
     display: flex;
-    gap: 20px;
-    flex-wrap: wrap; /* Allows wrapping if the screen is too small */
+    align-items: center;
     justify-content: space-between;
-}
-
-.address-card {
-    background-color: #FFD700;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    width: 300px;
     margin-bottom: 20px;
 }
 
+.tracking-info h2 {
+    background-color: white;
+    font-size: 30px;
+    margin: 0;
+    color: black;
+}
+
+.barcode-container img {
+    height: 80px;
+    margin-left: 120px;
+    padding-right: 200px;
+}
+
+.address-cards {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: nowrap; /* Prevents wrapping on large screens */
+}
+
+.address-card {
+    color: #000;
+    text-align: left;
+    flex: 1 1 48%; /* Ensures two cards take up almost equal width */
+    background: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
 .address-card h3 {
-    font-size: 1.2em;
-    margin-bottom: 10px;
+    font-size: 23px;
+    color: black;
+    margin-top: 0;
 }
 
-.address-card p {
-    margin: 5px 0;
-    font-size: 0.9em;
-}
-
-.address-card strong {
+.details-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 40px;
+    font-family: Arial, sans-serif;
+  }
+  
+  .details-table th, .details-table td {
+    border: 1px solid #ddd;
+    padding: 10px 15px 20px 60px; 
+    text-align: left;
+  }
+  
+  .details-table th {
+    background-color: navy;
     font-weight: bold;
+  }
+  
+  .details-table td {
+    background-color: white;
+    color: black;
+  }
+  
+  .details-table tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .tracking-info {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .barcode-container img {
+        margin: 10px 0 0;
+    }
+
+    .address-cards {
+        flex-direction: column;
+    }
+
+    .address-card {
+        flex: 1 1 100%;
+    }
 }
 
 
