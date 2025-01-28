@@ -120,8 +120,8 @@ function displayPackageDetails(details) {
         <table class="details-table">
             <thead>
                 <tr>
-                    <th>Tracking Number</th>
-                    <th>Estimated Delivery</th>
+                    <th>Package Name</th>
+                    <th>Delivery Date</th>
                     <th>Status</th>
                 </tr>
             </thead>
