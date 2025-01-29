@@ -1,25 +1,40 @@
-// Responsive Menu Toggle
-const menuToggle = document.querySelector(".menu-toggle");
-const nav = document.querySelector(".nav");
+// Import Firebase SDK modules
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
+import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-database.js";
 
-menuToggle.addEventListener("click", () => {
-  nav.classList.toggle("active");
-});
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyDrkxn2Sw1CwE_XqktaZeiF4x3hJWURNHE",
+  authDomain: "expressdelivery247-191d2.firebaseapp.com",
+  projectId: "expressdelivery247-191d2",
+  storageBucket: "expressdelivery247-191d2.firebasestorage.app",
+  messagingSenderId: "573437430411",
+  appId: "1:573437430411:web:8eaf8811344c0386a5628e",
+  measurementId: "G-4D7T350EPJ"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const database = getDatabase(app);
 
 // Get references to form and table body
 const form = document.getElementById("package-form");
 const tableBody = document.querySelector("#package-table tbody");
 
-// Retrieve stored packages from localStorage
-let packages = [];
-try {
-  const storedData = localStorage.getItem("packages");
-  if (storedData) {
-    packages = JSON.parse(storedData);
+// Retrieve packages from Firebase on page load
+let packages = []; // Local array to store package data
+
+const fetchPackagesFromFirebase = async () => {
+  try {
+    const snapshot = await get(ref(database, "packages"));
+    if (snapshot.exists()) {
+      packages = Object.values(snapshot.val());
+      renderTable();
+    }
+  } catch (error) {
+    console.error("Error fetching packages from Firebase:", error);
   }
-} catch (e) {
-  console.error("Error parsing packages from localStorage", e);
-}
+};
 
 // Function to render the table rows
 const renderTable = () => {
@@ -36,9 +51,9 @@ const renderTable = () => {
       <td>${pkg.deliveryDate}</td>
       <td>${pkg.origin}</td>
       <td>${pkg.destination}</td>
-      <td>${pkg.weight} kg</td> <!-- Display weight with "kg" suffix -->
+      <td>${pkg.weight}</td>
       <td>${pkg.paymentMode}</td>
-      <td>${pkg.packageStatus}</td> <!-- Add package status column -->
+      <td>${pkg.packageStatus}</td>
       <td>
         <button class="pause" data-index="${index}">Pause</button>
         <button class="resume" data-index="${index}">Resume</button>
@@ -49,17 +64,8 @@ const renderTable = () => {
   });
 };
 
-// Save the packages array to localStorage
-const savePackagesToLocalStorage = () => {
-  try {
-    localStorage.setItem("packages", JSON.stringify(packages));
-  } catch (e) {
-    console.error("Error saving packages to localStorage", e);
-  }
-};
-
-// Handle form submission
-form.addEventListener("submit", (e) => {
+// Handle form submission and save data to Firebase
+form.addEventListener("submit", async (e) => {
   e.preventDefault();
 
   // Get form values
@@ -75,7 +81,7 @@ form.addEventListener("submit", (e) => {
   const paymentMode = document.getElementById("payment-mode").value;
   const comments = document.getElementById("comments").value;
 
-  // Get shipper and receiver address details
+  // Get shipper and receiver details
   const shipperName = document.getElementById("shipper-name").value;
   const shipperAddress = document.getElementById("shipper-address").value;
   const shipperPhone = document.getElementById("shipper-phone").value;
@@ -84,7 +90,7 @@ form.addEventListener("submit", (e) => {
   const receiverAddress = document.getElementById("receiver-address").value;
   const receiverPhone = document.getElementById("receiver-phone").value;
 
-  // Check for empty required fields (add more if needed)
+  // Check for required fields
   if (
     !packageName ||
     !trackingNumber ||
@@ -93,16 +99,16 @@ form.addEventListener("submit", (e) => {
     !shipDate ||
     !deliveryDate ||
     !paymentMode ||
-    !shipperName || // Check if shipper details are provided
-    !shipperPhone || // Check if shipper details are provided
-    !receiverName || // Check if receiver details are provided
-    !receiverPhone // Check if receiver details are provided
+    !shipperName ||
+    !shipperPhone ||
+    !receiverName ||
+    !receiverPhone
   ) {
     alert("Please fill in all the required fields.");
     return;
   }
 
-  // Create a new package object, including all necessary details
+  // Create a new package object
   const newPackage = {
     packageName,
     trackingNumber,
@@ -113,7 +119,7 @@ form.addEventListener("submit", (e) => {
     packageStatus: "Paused", // Default status
     origin,
     destination,
-    weight: `${weight} kg`, // Store weight with "kg" suffix
+    weight: `${weight} kg`, // Add "kg" suffix
     paymentMode,
     comments,
     shipperName,
@@ -121,20 +127,24 @@ form.addEventListener("submit", (e) => {
     shipperPhone,
     receiverName,
     receiverAddress,
-    receiverPhone
+    receiverPhone,
   };
 
-  // Add the package to the array
-  packages.push(newPackage);
+  // Save the package to Firebase
+  try {
+    const packageRef = ref(database, `packages/${trackingNumber}`); // Use tracking number as the key
+    await set(packageRef, newPackage);
 
-  // Save the updated packages array to localStorage
-  savePackagesToLocalStorage();
+    alert("Package saved to Firebase!");
 
-  // Re-render the table
-  renderTable();
-
-  // Clear the form fields
-  form.reset();
+    // Update local packages array and re-render table
+    packages.push(newPackage);
+    renderTable();
+    form.reset(); // Clear the form fields
+  } catch (error) {
+    console.error("Error saving package to Firebase:", error);
+    alert("Failed to save package to Firebase.");
+  }
 });
 
 // Handle actions in the table (Pause, Resume, Delivered)
@@ -144,28 +154,23 @@ tableBody.addEventListener("click", (e) => {
     const index = button.dataset.index;
 
     if (button.classList.contains("pause")) {
-      // Change status to "Pause" when Pause is clicked
       packages[index].packageStatus = "Paused";
       alert(`Package "${packages[index].packageName}" paused!`);
     } else if (button.classList.contains("resume")) {
-      // Change status to "In Transit" when Resume is clicked
       packages[index].packageStatus = "In Transit";
-      alert(`Package "${packages[index].packageName}" resumed and is now In Transit!`);
+      alert(`Package "${packages[index].packageName}" resumed!`);
     } else if (button.classList.contains("delivered")) {
-      // Change status to "Delivered" when Delivered is clicked
       packages[index].packageStatus = "Delivered";
       alert(`Package "${packages[index].packageName}" marked as delivered!`);
-      // Optionally remove the package from the array after it's delivered
-      // packages.splice(index, 1);
     }
 
-    // Save the updated packages array to localStorage
-    savePackagesToLocalStorage();
-
-    // Re-render the table to reflect the updated status
-    renderTable();
+    // Update the package in Firebase
+    const packageRef = ref(database, `packages/${packages[index].trackingNumber}`);
+    set(packageRef, packages[index])
+      .then(() => renderTable())
+      .catch((error) => console.error("Error updating package status:", error));
   }
 });
 
-// Initial render of the table
-renderTable();
+// Fetch and render packages on page load
+fetchPackagesFromFirebase();

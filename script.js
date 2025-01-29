@@ -1,3 +1,23 @@
+// Import Firebase modules
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
+import { getDatabase, ref, get, update } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-database.js";
+
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyDrkxn2Sw1CwE_XqktaZeiF4x3hJWURNHE",
+  authDomain: "expressdelivery247-191d2.firebaseapp.com",
+  databaseURL: "https://expressdelivery247-191d2-default-rtdb.firebaseio.com",
+  projectId: "expressdelivery247-191d2",
+  storageBucket: "expressdelivery247-191d2.firebasestorage.app",
+  messagingSenderId: "573437430411",
+  appId: "1:573437430411:web:8eaf8811344c0386a5628e",
+  measurementId: "G-4D7T350EPJ"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const database = getDatabase(app);
+
 // Handle form submission and tracking number validation
 const trackingForm = document.querySelector('.tracking-form');
 const trackingInput = document.querySelector('.tracking-form input');
@@ -15,7 +35,7 @@ trackingForm.addEventListener('submit', async (event) => {
 
   if (!isValidTrackingNumber(trackingNumber)) {
     errorMessage.textContent =
-      'Invalid tracking number. A valid tracking number must be 10-12 numeric characters.';
+      'Invalid tracking number. Please enter a 20-character alphanumeric code.';
     errorMessage.style.display = 'block';
     trackingInput.style.border = '2px solid red';
     return;
@@ -24,46 +44,18 @@ trackingForm.addEventListener('submit', async (event) => {
   errorMessage.style.display = 'none';
   trackingInput.style.border = '2px solid #FFD700';
 
-  // Check for local data or fetch from external source
-  const packageDetails = getPackageDetails(trackingNumber);
-  if (packageDetails) {
-    displayPackageDetails(packageDetails); // Display from local storage
-  } else {
-    try {
-      const response = await fetch(`success.html?tracking=${trackingNumber}`);
-
-      // Check if the response is OK (status 200)
-      if (!response.ok) {
-        throw new Error('Tracking Number not found.');
-      }
-
-      // Log the response status and headers
-      console.log('Response Status:', response.status);
-      console.log('Response Headers:', response.headers);
-
-      const responseText = await response.text();
-      console.log('Response Text:', responseText);  // Log the actual response text for debugging
-
-      // Check if response is HTML (could be an error page)
-      if (responseText.startsWith('<!DOCTYPE html>')) {
-        throw new Error('Tracking Number not found in HTML response.');
-      }
-
-      // Attempt to parse the response as JSON
-      let data;
-      try {
-        data = JSON.parse(responseText);
-      } catch (parseError) {
-        throw new Error('Failed to parse JSON response');
-      }
-
-      displayPackageDetails(data); // Display fetched details
-    } catch (error) {
-      alert(error.message);
+  try {
+    const packageDetails = await getPackageDetails(trackingNumber);
+    if (packageDetails) {
+      displayPackageDetails(packageDetails); // Display from Firebase
+    } else {
+      throw new Error("Tracking Number not found.");
     }
+  } catch (error) {
+    alert(error.message);
   }
 
-  trackingInput.value = '';
+  trackingInput.value = ''; // Clear input field
 });
 
 // Validate tracking number (20 alphanumeric characters)
@@ -75,22 +67,22 @@ function isValidTrackingNumber(number) {
 // Live input validation for tracking number
 trackingInput.addEventListener('input', () => {
   const value = trackingInput.value.trim();
-  if (value === '' || !isValidTrackingNumber(value)) {
-    trackingInput.style.border = '2px solid red';
-  } else {
-    trackingInput.style.border = '2px solid #FFD700';
-  }
+  trackingInput.style.border = value === '' || !isValidTrackingNumber(value) ? '2px solid red' : '2px solid #FFD700';
 });
 
-// Retrieve package details from local storage
-function getPackageDetails(trackingNumber) {
-  const packages = JSON.parse(localStorage.getItem('packages')) || [];
-  return packages.find((pkg) => pkg.trackingNumber === trackingNumber);
+// Retrieve package details from Firebase
+async function getPackageDetails(trackingNumber) {
+  try {
+    const snapshot = await get(ref(database, `packages/${trackingNumber}`));
+    return snapshot.exists() ? snapshot.val() : null;
+  } catch (error) {
+    console.error("Error fetching tracking details from Firebase:", error);
+    return null;
+  }
 }
 
 function displayPackageDetails(details) {
   trackingResult.innerHTML = `
-    <!-- Tracking Number with Barcode -->
     <div class="tracking-info">
         <h2>Tracking Number: ${details.trackingNumber || 'N/A'}</h2>
         <div class="barcode-container">
@@ -98,7 +90,6 @@ function displayPackageDetails(details) {
         </div>
     </div>
 
-    <!-- Address Cards -->
     <div class="address-cards">
         <div class="address-card">
             <h3>Shipper Address</h3>
@@ -107,7 +98,6 @@ function displayPackageDetails(details) {
             <p><strong>Shipper Address:</strong> ${details.shipperAddress || 'N/A'}</p>
             <p><strong>Phone Number:</strong> ${details.shipperPhone || 'N/A'}</p>
         </div>
-
         <div class="address-card">
             <h3>Receiver Address</h3>
             <hr>
@@ -117,15 +107,12 @@ function displayPackageDetails(details) {
         </div>
     </div>
 
-<!-- Styled Table for Package Details -->
     <div class="package-details">
         <table class="details-table">
             <thead>
-                <tr>
-                    <th>Package Name</th>
-                    <th>Delivery Date</th>
-                    <th>Status</th>
-                </tr>
+                <tr><th>Package Name</th>
+                <th>Delivery Date</th>
+                <th>Status</th></tr>
             </thead>
             <tbody>
                 <tr>
@@ -135,11 +122,9 @@ function displayPackageDetails(details) {
                 </tr>
             </tbody>
             <thead>
-                <tr>
-                    <th>Shipping Date</th>
-                    <th>Departure Time</th>
-                    <th>Expected Delivery Time</th>
-                </tr>
+                <tr><th>Shipping Date</th>
+                <th>Departure Time</th>
+                <th>Estimated Delivery Time</th></tr>
             </thead>
             <tbody>
                 <tr>
@@ -149,11 +134,9 @@ function displayPackageDetails(details) {
                 </tr>
             </tbody>
             <thead>
-                <tr>
-                    <th>Origin</th>
-                    <th>Destination</th>
-                    <th>Weight</th>
-                </tr>
+                <tr><th>Origin</th>
+                <th>Destination</th>
+                <th>Weight</th></tr>
             </thead>
             <tbody>
                 <tr>
@@ -163,75 +146,66 @@ function displayPackageDetails(details) {
                 </tr>
             </tbody>
             <thead>
-                <tr>
-                    <th>Payment Mode</th>
-                </tr>
+                <th>Payment Mode</th>
+                <th>Comments</th></tr>
             </thead>
             <tbody>
                 <tr>
                     <td>${details.paymentMode || 'N/A'}</td>
+                    <td>${details.comments || 'N/A'}</td>
                 </tr>
             </tbody>
         </table>
     </div>
 
+
   `;
 }
 
-
-
-// Action buttons to update package status
-trackingResult.addEventListener('click', (event) => {
-  if (event.target.classList.contains('pause') || event.target.classList.contains('resume') || event.target.classList.contains('delivered')) {
+// Handle status update clicks
+trackingResult.addEventListener("click", async (event) => {
+  if (event.target.classList.contains("pause") || event.target.classList.contains("resume") || event.target.classList.contains("delivered")) {
     const button = event.target;
-    const index = button.dataset.index;
-    let packages = JSON.parse(localStorage.getItem('packages')) || [];
-    const pkg = packages[index];
+    const trackingNumber = button.dataset.trackingNumber;
 
-    // Update the package status based on the button clicked
-    if (button.classList.contains('pause')) {
-      pkg.packageStatus = 'Paused';
-    } else if (button.classList.contains('resume')) {
-      pkg.packageStatus = 'In Progress';
-    } else if (button.classList.contains('delivered')) {
-      pkg.packageStatus = 'Delivered';
+    try {
+      const packageRef = ref(database, `packages/${trackingNumber}`);
+      let newStatus = button.classList.contains("pause") ? "Paused" : 
+                      button.classList.contains("resume") ? "In Progress" : "Delivered";
+
+      await update(packageRef, { packageStatus: newStatus });
+
+      const updatedPackageDetails = await getPackageDetails(trackingNumber);
+      if (updatedPackageDetails) {
+        displayPackageDetails(updatedPackageDetails);
+      }
+
+      alert(`Package status updated to ${newStatus}`);
+    } catch (error) {
+      console.error("Error updating package status:", error);
+      alert("Failed to update package status.");
     }
-
-    // Save the updated package data back to localStorage
-    localStorage.setItem('packages', JSON.stringify(packages));
-
-    // Refresh the displayed details
-    displayPackageDetails(pkg);
   }
 });
 
 // Smooth scrolling for navigation links
-const links = document.querySelectorAll('.nav-links a');
-links.forEach((link) => {
+document.querySelectorAll('.nav-links a').forEach((link) => {
   link.addEventListener('click', (event) => {
     event.preventDefault();
-    const targetId = event.target.getAttribute('href').slice(1);
-    const targetElement = document.getElementById(targetId);
-
-    if (targetElement) {
-      targetElement.scrollIntoView({ behavior: 'smooth' });
-    }
+    document.getElementById(event.target.getAttribute('href').slice(1))?.scrollIntoView({ behavior: 'smooth' });
   });
 });
 
 // Mobile Navigation Toggle
-const menuToggle = document.querySelector('.menu-toggle');
-const nav = document.querySelector('.nav');
-
-menuToggle.addEventListener('click', () => {
-  nav.classList.toggle('active');
+document.querySelector('.menu-toggle').addEventListener('click', () => {
+  document.querySelector('.nav').classList.toggle('active');
 });
 
 // Profile Popup Form Logic
 const profileIcon = document.querySelector('.profile-icon');
 const popupForm = document.querySelector('.popup-form');
 const profileForm = document.getElementById('profile-form');
-const validCode = '199333'; // Replace this with the correct code
+const validCode = '199333';
 
 profileIcon.addEventListener('click', (event) => {
   event.stopPropagation();
@@ -247,11 +221,5 @@ document.addEventListener('click', (event) => {
 profileForm.addEventListener('submit', (event) => {
   event.preventDefault();
   const enteredCode = document.getElementById('six-digit-code').value;
-
-  if (enteredCode === validCode) {
-    alert('Code is valid! Redirecting...');
-    window.location.href = 'success.html';
-  } else {
-    alert('Invalid code. Please try again.');
-  }
+  enteredCode === validCode ? (alert('Code is valid! Redirecting...'), window.location.href = 'success.html') : alert('Invalid code. Please try again.');
 });
